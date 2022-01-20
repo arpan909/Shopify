@@ -1,4 +1,5 @@
 const express = require("express");
+const res = require("express/lib/response");
 const Item = require("../model/items");
 const router = express.Router();
 
@@ -22,40 +23,57 @@ router.post("/items", async (req, res) => {
   const newItem = new Item(req.body);
   try {
     await newItem.save();
-    res.render("Done.ejs", { name: req.body.name });
+    res.render("Done.ejs", { msg: `Added ${req.body.name} sucessfully!` });
   } catch (err) {
     res.render("404.ejs");
     res.status(400).json(err);
   }
 });
 
-//Update Item
-router.patch("/item/:id", async (req, res) => {
-  const validUpdates = Object.keys(Item.schema.obj);
-  const userUpdates = Object.keys(req.body);
-  const validOperation = userUpdates.every((update) =>
-    validUpdates.includes(update)
-  );
-  try {
-    if (!validOperation) {
-      res.status(400).json({ error: "Invalid update!" });
-    }
+router.get("/update", async (req, res) => {
+  res.render("Update.ejs");
+});
 
-    const itemToBeUpdated = await Item.findOne({ _id: req.params.id });
+//Update Item
+router.post("/item", async (req, res) => {
+  console.log(req.body);
+  try {
+    const itemToBeUpdated = await Item.findOne({ _id: req.body._id });
 
     if (!itemToBeUpdated) {
-      return res.status(400).json({ error: "Item doesn't exist!" });
+      res.render("404.ejs", { error: "Id is invalid!" });
     }
 
+    const userUpdates = Object.keys(req.body);
+    console.log(userUpdates);
+    console.log(itemToBeUpdated);
     userUpdates.forEach((update) => {
       itemToBeUpdated[update] = req.body[update];
     });
 
     await itemToBeUpdated.save();
-    res.json(itemToBeUpdated);
+    res.render("Done.ejs", { msg: `Updated ${req.body._id} sucessfully!` });
   } catch (error) {
-    res.status(500).json({ error: "Something went wrong!" });
+    res.render("404.ejs", { error: "Something went wrong!" });
   }
 });
 
+router.get("/delete", (req, res) => {
+  res.render("Delete.ejs");
+});
+
+router.post("/itemDelete", async (req, res) => {
+  try {
+    const deleted = await Item.findOneAndDelete({ _id: req.body._id });
+    console.log("Deleted: " + deleted);
+    if (!deleted) {
+      res.render("404.ejs", { error: "No item with the given Id!" });
+    }
+    res.render("Done.ejs", {
+      msg: `Item ${req.body._id} deleted sucessfully!`,
+    });
+  } catch (error) {
+    res.render("404.ejs", { error: "Something went wrong!" });
+  }
+});
 module.exports = router;
