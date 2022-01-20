@@ -3,14 +3,14 @@ const res = require("express/lib/response");
 const Item = require("../model/items");
 const router = express.Router();
 
-// router.get("/", (req, res) => {
-//   res.render("Home.ejs");
-// });
+router.get("/", (req, res) => {
+  res.redirect("/items");
+});
 //Get all Items
 router.get("/items", async (req, res) => {
-  const item = await Item.find({});
-  res.render("Home.ejs", { data: item });
-  res.json(item);
+  const items = await Item.find({});
+  res.render("Home.ejs", { data: items });
+  res.json(items);
   console.log(Object.keys(Item.schema.obj));
 });
 
@@ -75,5 +75,22 @@ router.post("/itemDelete", async (req, res) => {
   } catch (error) {
     res.render("404.ejs", { error: "Something went wrong!" });
   }
+});
+
+router.get("/csvExport", async (req, res) => {
+  const fastcsv = require("fast-csv");
+  const fs = require("fs");
+  const ws = fs.createWriteStream("my_data.csv");
+
+  const data = await Item.find({});
+
+  fastcsv
+    .write(data, { headers: true })
+    .on("finish", function () {
+      console.log("Write to my_data.csv successfully!");
+    })
+    .pipe(ws);
+
+  res.json({ msg: "Done" });
 });
 module.exports = router;
