@@ -6,4 +6,4 @@
 
 3). Run "npm run dev".
 
-4). Go to "http://localhost:300" and use.
+4). Go to "http://localhost:3000" and use.
