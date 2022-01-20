@@ -6,12 +6,9 @@ const item = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    quantity: {
-      type: Number,
-      default: 0,
-    },
-    description: {
+    name: {
       type: String,
+      required: true,
     },
   },
   {

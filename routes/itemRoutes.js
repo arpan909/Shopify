@@ -2,20 +2,29 @@ const express = require("express");
 const Item = require("../model/items");
 const router = express.Router();
 
+// router.get("/", (req, res) => {
+//   res.render("Home.ejs");
+// });
 //Get all Items
 router.get("/items", async (req, res) => {
   const item = await Item.find({});
+  res.render("Home.ejs", { data: item });
   res.json(item);
   console.log(Object.keys(Item.schema.obj));
 });
 
+router.get("/insert", (req, res) => {
+  res.render("Insert.ejs");
+});
 //Create a new Item
 router.post("/items", async (req, res) => {
+  console.log(req.body);
   const newItem = new Item(req.body);
   try {
     await newItem.save();
-    res.json(newItem);
+    res.render("Done.ejs", { name: req.body.name });
   } catch (err) {
+    res.render("404.ejs");
     res.status(400).json(err);
   }
 });

@@ -1,9 +1,14 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+
 const app = express();
 
 const mongoose = require("mongoose");
 
 const itemRoutes = require("./routes/itemRoutes");
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.set("view engine", "ejs");
 
 app.use(express.json());
 

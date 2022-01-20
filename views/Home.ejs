@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+  </head>
+  <body>
+    <p>All items</p>
+    <% for(var i = 0; i < data.length; i++) {%>
+    <ul>
+      <li class="data"><span>Id= <%= data[i]._id %></span></li>
+      <li class="data"><span>Name= <%= data[i].name %></span></li>
+      <li class="data">
+        <span>Price= <%= data[i].price %></span>
+      </li>
+    </ul>
+    <!-- Output name from the iterated quote object -->
+    <!-- <span>Name= <%= data[i].name %></span>: -->
+    <!-- Output quote from the iterated quote object -->
+    <!-- <span>Price= <%= data[i].price %></span> -->
+    <% } %>
+  </body>
+  <a class="nav-link" href="/items">Get all</a>
+  <a class="nav-link" href="/insert">Insert</a>
+  <a class="nav-link" href="/delete">Delete</a>
+</html>
